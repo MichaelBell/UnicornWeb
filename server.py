@@ -105,6 +105,7 @@ if __name__ == '__main__':
   unicornhat.show()
 
   cherrypy.server.socket_host = '0.0.0.0'
+  cherrypy.server.socket_port = 80
   WebSocketPlugin(cherrypy.engine).subscribe()
   cherrypy.tools.websocket = WebSocketTool()
 
