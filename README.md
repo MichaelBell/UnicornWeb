@@ -3,7 +3,7 @@ UnicornWeb
 
 Control a Pimoroni Unicorn HAT from your browser.
 
-!(https://raw.githubusercontent.com/MichaelBell/UnicornWeb/master/UnicornWeb.png)
+![UnicornWeb in action](https://raw.githubusercontent.com/MichaelBell/UnicornWeb/master/UnicornWeb.png "UnicornWeb in action")
 
 The client side of this project is based on https://github.com/tinkerlog/node-pixel, but the server is uses ws4py served from CherryPy instead of node.js.
 
