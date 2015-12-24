@@ -2,7 +2,7 @@
 <html lang="en" ng-app="app">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=1000, initial-scale=1.0">
+  <meta name="viewport" content="width=768, initial-scale=1.0">
   <title>LEDs</title>
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-responsive.css">
@@ -23,7 +23,20 @@
       </ul>
     </div>
   </div>
-  <div class="container" style="max-width: 600px" >
+  <div class="container" style="max-width: 700px" >
+    <div class="span9 colourGrid" ng-mousemove="mouseMove($event)">
+      <ul class="thumbnails">
+	<li ng-repeat="col in cols" class="span1">
+	  <div class="thumbnail2" style="background-color:rgb({{col.r}}, {{col.g}}, {{col.b}})"
+            ng-mousedown="mouseDown(col, $event)"
+            te-touchstart="touchStart(col, $event)"
+            te-touchmove="touchMove($event)"
+            te-touchend="mouseUp($event)">&nbsp;</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="container" style="max-width: 400px" >
     <div class="span1 btn btn-primary" ng-click="reset('ball')">ball</div>
     <div class="span1 btn btn-primary" ng-click="reset('clear')">clear</div>
   </div>

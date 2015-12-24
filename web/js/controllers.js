@@ -6,6 +6,7 @@ function LedCtrl($scope, $http, socket) {
 
   var mouseDown = false;
   var currentLed;
+  var currentCol;
   var lastX = 0;
   var lastY = 0;
 
@@ -13,6 +14,17 @@ function LedCtrl($scope, $http, socket) {
   $http.get('leds').success(function(data) {
     $scope.leds = data;
   });
+
+  $scope.cols = [{id:101, r:191, g:191, b:191, h:0, s:0, v:0.75},
+                 {id:102, r:191, g:0,   b:0,   h:0, s:1, v:0.75},
+                 {id:103, r:216, g:162, b:0,   h:0.125, s:1, v:0.85},
+                 {id:104, r:191, g:191, b:0,   h:0.167, s:1, v:0.75},
+                 {id:105, r:0,   g:191, b:0,   h:0.333, s:1, v:0.75},
+                 {id:106, r:0,   g:191, b:191, h:0.5, s:1, v:0.75},
+                 {id:107, r:0,   g:0,   b:229, h:0.667, s:1, v:0.9},
+                 {id:108, r:139, g:0,   b:204, h:0.78,  s:1, v:0.8},
+                 {id:109, r:0,   g:0,   b:0,   h:0, s:1, v:0} ];
+  currentCol = $scope.cols[1];
 
   $scope.reset = function(to) {
     socket.send(JSON.stringify({'req':'reset', 'to':to}));
@@ -75,35 +87,31 @@ function LedCtrl($scope, $http, socket) {
   }
 
   function onLedDown(led, clientX, clientY) {
+    if (led.id > 100) { currentCol = led; return; }
     mouseDown = true;
     lastX = clientX;
     lastY = clientY;
     currentLed = $scope.leds[led.id];
-    if (typeof currentLed.hue === "undefined") {
-      currentLed.hue = 0.5;
-      currentLed.light = 0.5;
-    }
-    else {
-      currentLed.hue += 0.1;
-      if (currentLed.hue > 1.0) currentLed.hue = 0.0;
-    }
-      var rgb = hsvToRgb(currentLed.hue, 1.0, currentLed.light);
+    currentLed.h = currentCol.h;
+    currentLed.s = currentCol.s;
+    currentLed.v = currentCol.v;
+    currentCol = currentLed;
+      var rgb = hsvToRgb(currentLed.h, currentLed.s, currentLed.v);
       currentLed.r = rgb[0];
       currentLed.g = rgb[1];
       currentLed.b = rgb[2];
       $scope.submitLed(currentLed);
-    
   }
 
   function onLedMove(clientX, clientY) {
     if (mouseDown) {
-      var deltaX = (clientX - lastX) / 200;
-      var deltaY = (clientY - lastY) / 200;
-      var newHue = currentLed.hue + deltaX;
-      var newLight = currentLed.light + deltaY;
-      currentLed.hue = (newHue > 0.0 && newHue < 1.0) ? newHue : currentLed.hue;
-      currentLed.light = (newLight > 0.0 && newLight < 1.0) ? newLight : currentLed.light;
-      var rgb = hsvToRgb(currentLed.hue, 1.0, currentLed.light);
+      var deltaX = (clientX - lastX) / 100;
+      var deltaY = (clientY - lastY) / 100;
+      var newSat = currentLed.s + deltaX;
+      var newLight = currentLed.v + deltaY;
+      currentLed.s = (newSat > 0.0 && newSat < 1.0) ? newSat : currentLed.s;
+      currentLed.v = (newLight > 0.0 && newLight < 1.0) ? newLight : currentLed.v;
+      var rgb = hsvToRgb(currentLed.h, currentLed.s, currentLed.v);
       currentLed.r = rgb[0];
       currentLed.g = rgb[1];
       currentLed.b = rgb[2];
